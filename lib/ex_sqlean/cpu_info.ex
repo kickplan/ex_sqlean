@@ -1,44 +1,28 @@
-# With ideas from from https://github.com/zeam-vm/cpu_info/blob/master/lib/cpu_info.ex
 defmodule ExSqlean.CpuInfo do
   @doc """
   Responds with os type / cpu type tuple.
 
   Example:
       iex_ > ExSqlean.CpuInfo.fullinfo()
-      {:macos, "arm64"}
+      {:macos, "x86_64"}
   """
-  @spec fullinfo :: {atom(), binary()}
-  def fullinfo do
-    if v = ExSqlean.CacheETS.get(:fullinfo) do
-      v
-    else
-      v = {os_type(), cpu_type()}
-      ExSqlean.CacheETS.put(:fullinfo, v)
-      v
+  @spec platform :: {atom(), binary()}
+  def platform do
+    case :persistent_term.get(__MODULE__, nil) do
+      nil ->
+        {os_type(), cpu_type()}
+        |> tap(fn info -> :persistent_term.put(__MODULE__, info) end)
+
+      fullinfo ->
+        fullinfo
     end
   end
 
   defp cpu_type do
-    cpu_type_sub(os_type())
-  end
-
-  defp cpu_type_sub(os_type) when os_type in [:windows, :linux, :unknown] do
-    :erlang.system_info(:system_architecture) |> List.to_string() |> String.split("-") |> hd
-  end
-
-  defp cpu_type_sub(os_type) when os_type in [:freebsd, :macos] do
-    confirm_executable("uname")
-
-    case System.cmd("uname", ["-m"]) do
-      {result, 0} -> result |> String.trim()
-      _ -> raise RuntimeError, message: "uname does not work."
-    end
-  end
-
-  defp confirm_executable(command) do
-    if is_nil(System.find_executable(command)) do
-      raise RuntimeError, message: "#{command} isn't found."
-    end
+    :erlang.system_info(:system_architecture)
+    |> List.to_string()
+    |> String.split("-")
+    |> List.first()
   end
 
   defp os_type do

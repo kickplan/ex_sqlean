@@ -4,11 +4,11 @@ defmodule ExSqlean.MixProject do
   def project do
     [
       app: :ex_sqlean,
-      version: "0.8.8",
-      elixir: "~> 1.12",
+      version: "1.0.0",
+      elixir: "~> 1.16",
       deps: deps(),
       package: package(),
-      source_url: "https://github.com/mindreframer/ex_sqlean",
+      source_url: "https://github.com/kickplan/ex_sqlean",
       description: "Precompiled SQLite extensions, to be used with `exqlite`.",
       start_permanent: Mix.env() == :prod
     ]
@@ -17,8 +17,7 @@ defmodule ExSqlean.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {ExSqlean.Application, []}
+      extra_applications: [:logger]
     ]
   end
 

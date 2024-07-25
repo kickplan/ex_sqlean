@@ -5,7 +5,7 @@ This should help you save some build-time and make your code more deterministic.
 
 Source / Versions will be matching this fork from sqlean:
 
-- https://github.com/mindreframer/sqlean
+- https://github.com/nalgeon/sqlean
 
 ## Installation
 
@@ -15,7 +15,7 @@ by adding `ex_sqlean` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_sqlean, "~> 0.8.7"}
+    {:ex_sqlean, git: "https://github.com/kickplan/ex_sqlean.git", branch: "develop"}
   ]
 end
 ```

@@ -3,31 +3,18 @@ defmodule ExSqlean do
   Documentation for `ExSqlean`.
   """
 
-  alias ExSqlean.CpuInfo
+  alias ExSqlean.Extensions
 
-  # https://github.com/mindreframer/sqlean/blob/forked/gen/generateMakefile.js#L4
-  @extensions ExSqlean.Extensions.all()
-  def extensions do
-    @extensions
+  @extensions Extensions.all()
+  def extensions, do: @extensions
+
+  def ext_path(extension) when extension in @extensions do
+    Extensions.path() |> Path.join(extension)
   end
 
-  def path_for(extension) when extension in @extensions do
-    Path.join(:code.priv_dir(:ex_sqlean), "#{arch_path()}/#{extension}")
-  end
-
-  def path_for(missing_ext) do
+  def ext_path(extension) do
     raise(
-      "Extension '#{missing_ext}' not available! Please pick one from #{inspect(@extensions)}."
+      "Extension '#{extension}' not available! Please pick one from #{inspect(@extensions)}."
     )
-  end
-
-  def arch_path() do
-    case CpuInfo.fullinfo() do
-      {:macos, "arm64"} -> "darwin-arm64"
-      {:macos, "amd64"} -> "darwin-amd64"
-      {:windows, "win32"} -> "windows-win32"
-      {:windows, _} -> "windows-amd64"
-      {:linux, _} -> "linux-amd64"
-    end
   end
 end
